@@ -12,7 +12,7 @@
 
 ## Control Flow:
 - Creation of a class named Drive().
-- 
+
 The Drive() class manages and publishes PWM commands to control both the steering angles and driving velocities of the rover in both manual and autonomous modes.
 ## Subscribers:
 - joy
