@@ -14,6 +14,22 @@
 - Creation of a class named Drive().
 
 The Drive() class manages and publishes PWM commands to control both the steering angles and driving velocities of the rover in both manual and autonomous modes.
+### Autonomous:
+1. Initialization:
+2. Storing steering encoder values:
+3. Storing autonomous pwm values:
+4. Deciding movement option for autonomous case:
+5. Configuring the steering and managing the steering motion:
+6. Configuring the velocity and angular velocity for translation:
+7. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
+
+### Manual:
+1. Initialization:
+2. Joystick command reception:
+3. Storing steering encoder values:
+4. Configuring the steering and managing the steering motion:
+5. Configuring the velocity and angular velocity for translation:
+6. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
 ## Subscribers:
 - joy
 - enc_auto
@@ -30,7 +46,7 @@ The Drive() class manages and publishes PWM commands to control both the steerin
 - spin(): While the rospy node is still running, it calls the main() function every 10 Hz, sleeps for a certain duration and then publishes the final pwm message for the motor.
 - main(): Prints certain lines based on the control state and rotation. It also calls the autonomous_control(), steering() and drive() functions. Finally, it updates self.print_ctrl
 - autonomous_control(): When the mode is autonomous, it decides whether to rotate in place, go forward or reset based on the self.rotin value. It also ensures these commands are not repeated using the values of self.state_init.
-- steering(): It works based on the states of self.steer_islocked and self.full_potential_islocked. It then call steer() or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
-- drive(): It uses the Joystick states to compute the PWM values of velocity and angular velocity and also updates the PWM message object for drive motors.
+- steering(): It works based on the states of self.steer_islocked and self.full_potential_islocked. It then calls steer() or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
+- drive(): It uses the Joystick states to compute the PWM values of velocity and angular velocity (along with their average values) and also updates the PWM message object for drive motors.
 - steer(): It uses encoder feedback, Proportion control and then publishes the steering PWM values.
  
