@@ -24,7 +24,7 @@ The Node() class manages and publishes PWM commands to control both the steering
 - outbuff: Temporary list to hold joystick values before assigning to self.outbuff.
 - rate: Controls how fast the run function while loop runs (50 Hz).
 - msg: Message object created from outbuff and published to stm_write.
-## Attrubutes and Methods:
+## Attributes and Methods:
 - self.outbuff: Holds 6 control values for different parts of the robotic arm. It is updated in the joyCallback() function.
 - self.pub: Publishes the final message object (msg) to topic stm_write.
 - msg.data: Holds the 6 integer values (copied from self.outbuff) that represent joint parameters.
