@@ -1,7 +1,7 @@
 # This file helps in understanding the Full_Potential_Steering_auto.py script.
 
 ## Imports:
-1. rospy
+1. ~rospy
 2. copy
 3. Joy(from sensor_msgs.msg)
 4. time
