@@ -22,8 +22,8 @@ The `Node()` class manages and publishes PWM commands to control both the steeri
 - `axes`: Stores the scaled joystick axes (to `255` for PWM interpretation).
 - `buttons`: Stores combined button values (when a combination of buttons is pressed) to update the `outbuff` list.
 - `outbuff`: Temporary list to hold joystick values before assigning to `self.outbuff`.
-- `rate`: Controls how fast the `run()` function while loop runs (`50` Hz).
-- `msg`: Message object created from outbuff and published to `stm_write`.
+- `rate`: Controls how fast the `run()` function `while` loop runs (`50` Hz).
+- `msg`: Message object created from `outbuff` and published to `stm_write`.
 ## Attributes and Methods:
 - `self.outbuff`: Holds 6 control values for different parts of the robotic arm. It is updated in the `joyCallback()` function.
 - `self.pub`: Publishes the final message object (`msg`) to topic `stm_write`.
@@ -31,7 +31,7 @@ The `Node()` class manages and publishes PWM commands to control both the steeri
 - `msg.layout`: Contains the structured format of the `msg.data` array.
 - `msg.layout.data_offset`: The amount by which the starting pointer should move to ignore starting data.
 - `msg.layout.dim`: Describes the array’s shape/dimensions (`size`, `stride`, `label`).
-1. `joyCallback()`: It is a callback function that reads the joystick values and scales them for PWM range of `255`. It also interprets the buttons pressed and factors in their effects. Finally, outbuff is updated for the various joint movements of the bevel.
+1. `joyCallback()`: It is a callback function that reads the joystick values and scales them for PWM range of `255`. It also interprets the buttons pressed and factors in their effects. Finally, `outbuff` is updated for the various joint movements of the bevel.
 2. `run()`: While rospy is running, the `createMsg()` function is run and the message object returned is then published. This is carried out at the rate of `50` Hz.
 3. `createMsg()`: It helps in structuring the message object in a better manner using `msg.layout` and also to include the length of the list `msg.data` as well as the intention to write the data somewhere.
 
