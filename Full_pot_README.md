@@ -114,4 +114,5 @@ The Drive() class manages and publishes PWM commands to control both the steerin
 8. steering(): It works based on the states of self.steer_islocked and self.full_potential_islocked. It then calls steer() or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
 9. drive(): It uses the Joystick states to compute the PWM values of velocity and angular velocity (along with their average values) and also updates the PWM message object for drive motors.
 10. steer(): It uses encoder feedback, Proportion control and then publishes the steering PWM values.
- 
+ <img width="427" alt="image" src="https://github.com/user-attachments/assets/77dcf9ca-915f-442a-8720-4530b189cfb5" />
+
