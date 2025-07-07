@@ -15,21 +15,27 @@
 
 The Drive() class manages and publishes PWM commands to control both the steering angles and driving velocities of the rover in both manual and autonomous modes.
 ### Autonomous:
-1. Initialization:
-2. Storing steering encoder values:
-3. Storing autonomous pwm values:
-4. Deciding movement option for autonomous case:
-5. Configuring the steering and managing the steering motion:
-6. Configuring the velocity and angular velocity for translation:
-7. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
+1. Initialization: This involves the declaring of attributes that will be used in the subsequent functions and initializing them to the start default values.
+2. Storing encoder values: In the enc_callback() function, the encoder values (to drive the motor) for each wheel are stored in self.enc_data.
+3. The autonomous mode button (A) is pressed.
+4. Storing autonomous pwm values: This function enables the extraction and storing of the velocity, angular velocity and crab (parallel) motion for the autonomous mode.
+5. Deciding movement option for autonomous case: Based on the value of self.rotin, the motion is decided as rotation in place or forward motion. Additionally, an option to reset is also available.
+6. Configuring the steering and managing the steering motion:
+- For each and every case (considering steering locks), the possible joystick movements are considered and the steering values are decided and then either sent to the steer() function for further processing and publishing, or directly finalised as the pwm values required to perform the steer operation and sent for publishing.
+- When the steering variables are locked, the joystick commands can be dynamic and there is no 'fixed' parameter as such. This requires getting the axis values, converting the net values into PWM and then sending for publishing.
+8. Configuring the velocity and angular velocity for translation: Once steering is complete, the velocity, angular velocity (vel) and the rotation direction (self.init_dir) for the autonomous mode are finalised and sent for publishing.
+9. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
 
 ### Manual:
-1. Initialization:
+1. Initialization: This involves the declaring of attributes that will be used in the subsequent functions and initializing them to the start default values.
 2. Joystick command reception:
-3. Storing steering encoder values:
+3. Storing encoder values: In the enc_callback() function, the encoder values (to drive the motor) for each wheel are stored in self.enc_data.
 4. Configuring the steering and managing the steering motion:
-5. Configuring the velocity and angular velocity for translation:
-6. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
+- For each and every case (considering steering locks), the possible joystick movements are considered and the steering values are decided and then either sent to the steer() function for further processing and publishing, or directly finalised as the pwm values required to perform the steer operation and sent for publishing.
+- The scaling factor s_arr is also included to calibrate the joystick movements into actual steering.
+- When the steering variables are locked, the joystick commands can be dynamic and there is no 'fixed' parameter as such. This requires getting the axis values, converting the net values into PWM and then sending for publishing.
+6. Configuring the velocity and angular velocity for translation: Once steering is complete, the velocity, angular velocity (vel) and the rotation direction (self.init_dir) are the stored in the self.pwm_msg.data list, while also considering the scaling factor for the calibration of the movement of the joystick (using d_arr).
+7. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
 ## Subscribers:
 - joy
 - enc_auto
@@ -39,6 +45,8 @@ The Drive() class manages and publishes PWM commands to control both the steerin
 - motor_pwm
 - state
 ## Attributes and Methods:
+- self.init_dir: List of direction multipliers (+1/-1) for each motor.
+- self.max_steer_pwm: Maximum PWM value allowed for steering motors, used to scale steering input safely.
 - self.pwm_pub:	Publishes motor PWM data as an Int32MultiArray on the 'motor_pwm' topic.
 - self.state_pub:	Publishes current driving state (autonomous/manual) as a Bool on the 'state' topic.
 - self.control:	List storing mode labels like 'joystick' and 'autonomous'.
