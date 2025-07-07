@@ -36,6 +36,8 @@ The Drive() class manages and publishes PWM commands to control both the steerin
 - When the steering variables are locked, the joystick commands can be dynamic and there is no 'fixed' parameter as such. This requires getting the axis values, converting the net values into PWM and then sending for publishing.
 6. Configuring the velocity and angular velocity for translation: Once steering is complete, the velocity, angular velocity (vel) and the rotation direction (self.init_dir) are the stored in the self.pwm_msg.data list, while also considering the scaling factor for the calibration of the movement of the joystick (using d_arr).
 7. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
+
+ <img width="427" alt="image" src="https://github.com/user-attachments/assets/77dcf9ca-915f-442a-8720-4530b189cfb5" />
 ## Subscribers:
 - joy
 - enc_auto
@@ -114,5 +116,4 @@ The Drive() class manages and publishes PWM commands to control both the steerin
 8. steering(): It works based on the states of self.steer_islocked and self.full_potential_islocked. It then calls steer() or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
 9. drive(): It uses the Joystick states to compute the PWM values of velocity and angular velocity (along with their average values) and also updates the PWM message object for drive motors.
 10. steer(): It uses encoder feedback, Proportion control and then publishes the steering PWM values.
- <img width="427" alt="image" src="https://github.com/user-attachments/assets/77dcf9ca-915f-442a-8720-4530b189cfb5" />
 
