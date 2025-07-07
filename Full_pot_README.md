@@ -39,7 +39,8 @@ The Drive() class manages and publishes PWM commands to control both the steerin
 
 ## Flow of Execution:
 
- <img width="427" alt="image" src="https://github.com/user-attachments/assets/77dcf9ca-915f-442a-8720-4530b189cfb5" />
+<img width="449" alt="image" src="https://github.com/user-attachments/assets/22bc1560-fb15-407c-b24f-59c64db66bfe" />
+
  
 ## Subscribers:
 - joy
