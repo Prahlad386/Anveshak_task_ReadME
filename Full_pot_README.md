@@ -110,14 +110,14 @@ The `Drive()` class manages and publishes PWM commands to control both the steer
 - `self.rotin`: Flag or counter related to rotation logic in autonomous mode.
 - `self.state`: Current operation mode: False = manual, True = autonomous.
 - `self.state_init`: Initialization state list used for state transitions or startup logic. |
-1. enc_callback(): Method that is called repeatedly (Callback) and gets the steering encoder values and stores them in self.enc_data list (for each of the 4 wheels) along with directional correction.
-2. rotinplace_callback(): Callback that receives, stores and prints 0 or 1 whether the bot should rotate in place or not.
-3. autonomous_motion_callback(): Callback that gets called when the robot is in autonomous mode and then stores the velocity, angular velocity, and the crab roation boolean. These will then be converted into PWM outputs.
-4. joyCallback() - Callback that gets called when the robot is in manual mode and stores joystick inputs with respect to the rover's drive, steering, and initialises the list for pwm value storage based on whether self.steer_islocked and self.full_potential_islocked are True or False. There is also a provision to switch between autonomous and manual modes.
-5. spin(): While the rospy node is still running, it calls the main() function every 10 Hz, sleeps for a certain duration and then publishes the final pwm message for the motor.
-6. main(): Prints certain lines based on the control state and rotation. It also calls the autonomous_control(), steering() and drive() functions. Finally, it updates self.print_ctrl
-7. autonomous_control(): When the mode is autonomous, it decides whether to rotate in place, go forward or reset based on the self.rotin value. It also ensures these commands are not repeated using the values of self.state_init.
-8. steering(): It works based on the states of self.steer_islocked and self.full_potential_islocked. It then calls steer() or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
-9. drive(): It uses the Joystick states to compute the PWM values of velocity and angular velocity (along with their average values) and also updates the PWM message object for drive motors.
-10. steer(): It uses encoder feedback, Proportion control and then publishes the steering PWM values.
+1. `enc_callback()`: Method that is called repeatedly (Callback) and gets the steering encoder values and stores them in `self.enc_data` list (for each of the 4 wheels) along with directional correction.
+2. `rotinplace_callback()`: Callback that receives, stores and prints 0 or 1 whether the bot should rotate in place or not.
+3. `autonomous_motion_callback()`: Callback that gets called when the robot is in autonomous mode and then stores the velocity, angular velocity, and the crab roation boolean. These will then be converted into PWM outputs.
+4. `joyCallback()`: Callback that gets called when the robot is in manual mode and stores joystick inputs with respect to the rover's drive, steering, and initialises the list for pwm value storage based on whether `self.steer_islocked` and `self.full_potential_islocked` are `True` or `False`. There is also a provision to switch between autonomous and manual modes.
+5. `spin()`: While the rospy node is still running, it calls the `main()` function every `10 Hz`, sleeps for a certain duration and then publishes the final pwm message for the motor.
+6. `main()`: Prints certain lines based on the control state and rotation. It also calls the `autonomous_control()`, `steering()` and `drive()` functions. Finally, it updates `self.print_ctrl`
+7. `autonomous_control()`: When the mode is autonomous, it decides whether to rotate in place, go forward or reset based on the `self.rotin` value. It also ensures these commands are not repeated using the values of `self.state_init`.
+8. `steering()`: It works based on the states of `self.steer_islocked` and `self.full_potential_islocked`. It then calls `steer()` or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
+9. `drive()`: It uses the Joystick states to compute the PWM values of velocity and angular velocity (along with their average values) and also updates the PWM message object for drive motors.
+10. `steer()`: It uses encoder feedback, Proportion control and then publishes the steering PWM values.
 
