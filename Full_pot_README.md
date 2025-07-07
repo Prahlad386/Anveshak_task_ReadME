@@ -37,7 +37,7 @@ The `Drive()` class manages and publishes PWM commands to control both the steer
 6. Configuring the velocity and angular velocity for translation: Once steering is complete, the velocity, angular velocity (`vel`) and the rotation direction (`self.init_dir`) are the stored in the self.pwm_msg.data list, while also considering the scaling factor for the calibration of the movement of the joystick (using `d_arr`).
 7. Publishing the message object of the PWM pulse: This contains the velocity, angular velocity and also the steering parameters.
 
-### Joystick Guide for Manual Operation:
+### Joystick Guide for Manual Operation (Courtesy of my man Apoorv):
 
 ![WhatsApp Image 2025-07-04 at 19 03 12_115e235d](https://github.com/user-attachments/assets/0d515316-5ead-4f86-bedc-6fc6d6a60202)
 ![WhatsApp Image 2025-07-04 at 19 03 12_90c999b9](https://github.com/user-attachments/assets/53d8d2ee-30cf-48cc-8a38-8cafaaf44386)
