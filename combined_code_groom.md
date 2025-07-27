@@ -47,10 +47,10 @@ The `Drive()` class.
 - `motion`
 - `gps_bool`
 - `rot`
-## Attributes and Methods: 
-| `self.bridge` | dhwvh |
-- `self.depth`|
-- `self.color_image`|
+## Attributes: 
+- `self.bridge` 
+- `self.depth`
+- `self.color_image`
 - `self.depth_image`
 - `self.latest_xmin`
 - `self.latest_ymin`
@@ -70,59 +70,48 @@ The `Drive()` class.
 - `self.kp`
 - `self.kp_rot`
 - `self.kp_straight_rot`
-        self.distance = 10.0
-        self.time_bool=False
-        for i in range(5):
-            print("hey! self.distance = 10", self.distance)
-        self.direction = "Not Available"
-        self.current_latitude = 0.0
-        self.current_longitude = 0.0
-        self.ret = False
-        self.initial_yaw = 0.0
-        self.rotate_angle = 90
-        self.angles_dict = defaultdict(list)
-        self.searchcalled = False
-        self.latlong = defaultdict(list)
-        self.latlong[0] = "latitude"
-        self.latlong[1] = "longitude"
-        self.arrow_numbers = 1
-        self.gpscalled = 0
-        self.depth_image=None
-        self.bridge = CvBridge()
-        self.drift_correction_const = 32
-
-        # bag
-        #        self.num=i
-        #        filename = "imu_data_"+str(self.num)+".bag"
-        #        self.bag=rosbag.Bag(filename,'w')
-        self.state = False
-        self.rot = 0 #No steering mode 
-        self.initial_drift_angle = 0
-
-        # search alg by turning realsense
-        self.enc_data = 0
-        self.start_time = time.time()
-        self.time_thresh = 20
-        self.time_thresh_rot = 5
-        self.pub = rospy.Publisher("stm_write", std_msgs.Int32MultiArray, queue_size=10)
-        self.init = False
-        self.start_angle = 50
-        self.angle_thresh = 4
-        # self.manjari = False
-        self.count_arrow = 0
-        self.image_avbl = False
-        self.pls_call_rot_once=False
-        
-        self.base_index=1        #For base rotation
-        self.base_rot_dir=1
-        
-1. `enc_callback()`: Method that is called repeatedly (Callback) and gets the steering encoder values and stores them in `self.enc_data` list (for each of the 4 wheels) along with directional correction.
-2. `rotinplace_callback()`: Callback that receives, stores and prints 0 or 1 whether the bot should rotate in place or not.
-3. `autonomous_motion_callback()`: Callback that gets called when the robot is in autonomous mode and then stores the velocity, angular velocity, and the crab roation boolean. These will then be converted into PWM outputs.
-4. `joyCallback()`: Callback that gets called when the robot is in manual mode and stores joystick inputs with respect to the rover's drive, steering, and initialises the list for pwm value storage based on whether `self.steer_islocked` and `self.full_potential_islocked` are `True` or `False`. There is also a provision to switch between autonomous and manual modes.
-5. `spin()`: While the rospy node is still running, it calls the `main()` function every `10 Hz`, sleeps for a certain duration and then publishes the final pwm message for the motor.
-6. `main()`: Prints certain lines based on the control state and rotation. It also calls the `autonomous_control()`, `steering()` and `drive()` functions. Finally, it updates `self.print_ctrl`
-7. `autonomous_control()`: When the mode is autonomous, it decides whether to rotate in place, go forward or reset based on the `self.rotin` value. It also ensures these commands are not repeated using the values of `self.state_init`.
-8. `steering()`: It works based on the states of `self.steer_islocked` and `self.full_potential_islocked`. It then calls `steer()` or directly sends the PWM signals for the motors for each wheel and looks at the joystick commands or states being used to confirm the movement.
-9. `drive()`: It uses the Joystick states to compute the PWM values of velocity and angular velocity (along with their average values) and also updates the PWM message object for drive motors.
-10. `steer()`: It uses encoder feedback, Proportion control and then publishes the steering PWM values.
+- `self.distance`
+- `self.time_bool`
+- `self.direction`
+- `self.current_latitude`
+- `self.current_longitude`
+- `self.ret`
+- `self.initial_yaw`
+- `self.rotate_angle`
+- `self.angles_dict`
+- `self.searchcalled`
+- `self.latlong`
+- `self.arrow_numbers`
+- `self.gpscalled`
+- `self.drift_correction_const`
+- `self.state`
+- `self.rot`
+- `self.initial_drift_angle`
+- `self.enc_data`
+- `self.start_time`
+- `self.time_thresh`
+- `self.time_thresh_rot`
+- `self.pub`
+- `self.init`
+- `self.start_angle`
+- `self.angle_thresh`
+- `self.count_arrow`
+- `self.image_avbl`
+- `self.pls_call_rot_once`
+- `self.base_index`
+- `self.base_rot_dir`
+## Methods:
+1. `state_callback()`: Makes the state `self.state` `False`.
+2. `color_callback()`: Converts the input image into an OpenCV compatible form (`BGR` Image), crops it to the specified size (`30:330, 170:490`) and makes the flag `self.image_avbl` `True`.
+3. `depth_callback()`: Same as `color_callback` but deals with the depth and keeps it in its original format using `passthrough`.
+4. `get_box()`: Loads and runs the YOLO model (loaded from `best_cube.pt`) and sets a bounding box with the boundary conditions as `self.latest_xmin`, `self.latest_ymin`, `self.latest_xmax`, `self.latest_ymax`.
+5. `cone_model()`: Same as `get_box` but uses a different YOLO model loaded from `Cone.pt`. It also calculates the depth of the centre of the cone detected (`self.depth`). It then returns `self.ret`, x-coordinate for the arrow centre `arrow_centre` and `self.depth`.
+6. `arrowdetectmorethan3()`: Works similar to `cone_model`'s latter part as an extension of `get_box`. It works on the bounding box generated and returns its centre `arrow_centre`, as well as its depth `self.depth` if applicable.
+7. `arrowdetectlessthan3()`: Takes the gaussian blur of the input image, resizes it and then analyzes the left and right templates (`self.templatel, self.templater`), after which the template scores are matched and the one with the higher score (by value of `max_loc_l, max_loc_r`) decides the direction. It then calculates the depth of the centre of the arrow, and stores as `z` or Soham Distance. Finally, it stores the confidence `conf` and finalises the direction in case `conf` is greater than `69`. It then returns the depth and direction.
+8. `cone()`: Applies HSV mask, morphological filtering, blur and then does contour detection using `convexHull` and `approxPolyDP`. It then draw rectangular bounding boxes around shapes that look like cones using `self.convex_hull_pointing_up` function and then returns the list of bounding boxes `bounding_rect`.
+9. `convex_hull_pointing_up()`: Analyses the aspect ratio `aspect_ratio=w/h` to values less than `0.7`, area `w*h>1000` and then checks the values of `point` in contour `ch` to check if the contour shape matches an upward facing cone and returns `True` if that is the case.
+10. `move_straight()`: It controls the robot to move forward toward the arrow and controls the motion when it nears the arrow, using Proportion control. Once it reaches the arrow, a flag is published `wheelrpm_pub.publish(msg)`. and `self.gpscalled` is made `1`. If the direction is known, the gps coordinates of `100` samples are stored and averaged in `lat_sum, lat_av, lon_sum, lon_avg` and then writted onto `sparsh2.csv`. The bot is then turned by `90` degrees to face in the direction of the arrow, which is activated by `self.pls_call_rot_once`. If nothing is encountered, it keeps going straight.
+11. `v1_competition()`: It first stops the rover and publishes the corresponding message and if `self.state` is `True`, prints the message to press `A` to go to autonomous mode or remain in joystick mode if `False`.
+12. `process_dict()`: Prints `self.searchcalled` as well as an `if` statement (that is not needed), if `self.searchcalled` is `True`, it reads a dictionary `self.angles_dict`, stores the key for the minimum distance as `self.min_dist` and then finds the average of the angles where the obstacle was found at `self.min_dist` as `self.which_enc_angle_to_turn`. Based on the sign of `self.which_enc_angle_to_turn`, it decideds whether the rover should turn `left` or `right`.
+13. `rotate()`: Performs directional rotation until the angle difference between `self.rotate_angle` and `diff (self.z_angle - self.initial_yaw)` is less than `0.5 * self.angle_thresh`. It also checks if `diff` is less than or greater than `120` and then accordingly increments or decrements by `360`.
+14. `rot_in_place()`: Does rotation-in-place maneuvre once and similarly computes how much more to rotate like `self.rotate`.
