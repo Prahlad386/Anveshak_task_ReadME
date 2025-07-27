@@ -49,14 +49,11 @@ The `Drive()` class.
 - `rot`
 ## Attributes: 
 - `self.bridge` 
-- `self.depth`
-- `self.color_image`
-- `self.depth_image`
-- `self.latest_xmin`
-- `self.latest_ymin`
-- `self.latest_xmax`
-- `self.latest_ymax`
-- `self.annotated_image`
+- `self.depth`: Depth value at the center of the arrow image.
+- `self.color_image`: 	Stores the latest color image frame.
+- `self.depth_image`: Stores the depth frame aligned with `self.color_image`, used to extract distance info.
+- `self.latest_xmin`, `self.latest_ymin`, `self.latest_xmax`, `self.latest_ymax`: Bounding box coordinates of recent bounding box formed.
+- `self.annotated_image`: Image with annotations like bounding boxes, labels, used for debugging or display.
 - `self.results= None`
 - `self.first_few`
 - `self.yaw_initialization_done`
@@ -115,3 +112,10 @@ The `Drive()` class.
 12. `process_dict()`: Prints `self.searchcalled` as well as an `if` statement (that is not needed), if `self.searchcalled` is `True`, it reads a dictionary `self.angles_dict`, stores the key for the minimum distance as `self.min_dist` and then finds the average of the angles where the obstacle was found at `self.min_dist` as `self.which_enc_angle_to_turn`. Based on the sign of `self.which_enc_angle_to_turn`, it decideds whether the rover should turn `left` or `right`.
 13. `rotate()`: Performs directional rotation until the angle difference between `self.rotate_angle` and `diff (self.z_angle - self.initial_yaw)` is less than `0.5 * self.angle_thresh`. It also checks if `diff` is less than or greater than `120` and then accordingly increments or decrements by `360`.
 14. `rot_in_place()`: Does rotation-in-place maneuvre once and similarly computes how much more to rotate like `self.rotate`.
+15. `search()`:
+16. `quaternion_to_euler()`: Computes the `pitch, roll` and `yaw` and returns those values using quaternions.
+17. `yaw_callback()`: Generates the yaw in degrees, first stores the initial yaw as `self.initial_yaw` and then computes the yaw as `self.z_angle = self.z_angle_in_rad*180/math.pi - self.initial_yaw` or `self.z_angle = self.z_angle_in_rad*180/math.pi` if `self.yaw_initialization_done` is `True`. Then it normalises the yaw to range `-180` to `180`.
+18. `enc_callback()`: updates `self.enc_data` with `msg.data[1]`, which contains the encoder angles.
+19. `gps_callback()`: Stores the latitude and longitude values (if they are non Null) in `self.current_latitude` and `self.current_longitude`.
+20. `main()`: It is the master function which decides what to do, and accordingly calls `self.process_dict`, `self.search` (if `self.turn` and `self.ret` are `False`), `self.move_straight` (if `self.turn` is `False` and `self.ret` is `True`) `self.rot_in_place` (if `self.distance`<`1.5`) or `self.rotate` (if `self.distance`>`1.5`) to perform straight motion, rotation to a particular angle, rotation in place or to process dictionary. 
+21. `run()`: If image is available and exists, it calls the `self.get_box` and `self.main` functions and also maintains to `rospy` rate as `10`.
