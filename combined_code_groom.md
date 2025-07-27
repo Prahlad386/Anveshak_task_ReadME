@@ -48,7 +48,7 @@ The `Drive()` class.
 - `gps_bool`
 - `rot`
 ## Attributes and Methods: 
-- `self.bridge`|
+| `self.bridge` | dhwvh |
 - `self.depth`|
 - `self.color_image`|
 - `self.depth_image`
