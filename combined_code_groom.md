@@ -161,3 +161,6 @@ The `ZedDepth()` class essentially helps the rover detect arrows by placing boun
 20. `gps_callback()`: Stores the latitude and longitude values (if they are non Null) in `self.current_latitude` and `self.current_longitude`.
 21. `main()`: It is the master function which decides what to do, and accordingly calls `self.process_dict`, `self.search` (if `self.turn` and `self.ret` are `False`), `self.move_straight` (if `self.turn` is `False` and `self.ret` is `True`) `self.rot_in_place` (if `self.distance`<`1.5`) or `self.rotate` (if `self.distance`>`1.5`) to perform straight motion, rotation to a particular angle, rotation in place or to process dictionary. 
 22. `run()`: If image is available and exists, it calls the `self.get_box` and `self.main` functions and also maintains to `rospy` rate as `10`.
+## Suggestions
+- `msg.data` is initialised to `[0, 0, 0, 0, 0, 0]` too many times, even though doing so inside the loop (as already done) would suffice.
+- `self.bridge = CvBridge()` is unnecessarily added twice.
