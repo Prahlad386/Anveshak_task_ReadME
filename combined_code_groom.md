@@ -35,9 +35,9 @@ The `ZedDepth()` class essentially helps the rover detect arrows by placing boun
 - If an image is found (`self.image_avbl` is `True`), and all the arrows are not found yet (`self.count_arrow < self.arrow_numbers`), `self.get_box` is called.
 - `self.main` function is called nevertheless.
 3. `self.get_box` loads the YOLO model and sets the bounding box for arrow detection.
-4. `self.main` is executed, wherein the various functions `self.process_dict`, `self.search`, `self.move_straight`, `self.rot_in_place` and `self.rotate` are called.
+4. `self.main` is executed, wherein the various functions `self.process_dict`, `self.search`, `self.move_straight`, `self.rot_in_place` and `self.rotate` are called. These functions publish the relevant messages to control the motors and PWM values. These values, having influenced the motors, are then received by callbacks via the topics they subscribe to.
 5. `self.state_callback` is executed which makes `self.state False`.
-6. `self.yaw_callback` is executed, which generates the `yaw` and normalises it to range `-180` to `180`.
+6. `self.yaw_callback` is executed, which generates the `yaw` and normalises it to range `-180` to `180` using `self.quaternion_to_euler`.
 7. `self.enc_callback` is then called which updates `self.enc_data` with encoder values.
 8. `self.gps_callback` is called which stores the latitude and longitude values.
 9. `self.color_callback` is called which converts the input image into an OpenCV compatible form and crops it to make it easy to work with.
@@ -46,6 +46,7 @@ The `ZedDepth()` class essentially helps the rover detect arrows by placing boun
 
 ## Flow of Execution:
 
+<img width="1021" height="641" alt="readmeflow drawio" src="https://github.com/user-attachments/assets/1eb325f1-9cbc-4fa1-8541-76f9e434efdb" />
 
  
 ## Subscribers:
@@ -139,7 +140,7 @@ The `ZedDepth()` class essentially helps the rover detect arrows by placing boun
 - If nothing is encountered, it keeps going straight.
 12. `v1_competition()`: It first stops the rover and publishes the corresponding message and if `self.state` is `True`, prints the message to press `A` to go to autonomous mode or remain in joystick mode if `False`.
 13. `process_dict()`:
-- Prints `self.searchcalled` as well as an `if` statement (that is not needed), if `self.searchcalled` is `True`, it reads a dictionary `self.angles_dict`, stores the key for the minimum distance as `self.min_dist` and then finds the average of the angles where the obstacle was found at `self.min_dist` as `self.which_enc_angle_to_turn`.
+- Prints `self.searchcalled` as well as an `if` statement (that is not needed), if `self.searchcalled` is `True`, it reads a dictionary `self.angles_dict`, stores the key for the minimum distance as `self.min_dist` and then finds the average of the angles where the arrow was found at `self.min_dist` as `self.which_enc_angle_to_turn`.
 - Based on the sign of `self.which_enc_angle_to_turn`, it decideds whether the rover should turn `left` or `right`.
 14. `rotate()`:
 - Performs directional rotation until the angle difference between `self.rotate_angle` and `diff (self.z_angle - self.initial_yaw)` is less than `0.5 * self.angle_thresh`.
